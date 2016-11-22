@@ -31,8 +31,10 @@ public class MeshGenerator {
 			for (int x = 0; x < pocCtvercuX; x++) {
 				index.add(y * n + x);
 				index.add(y * n + 1 + x);
-				index.add((y + 1) * n + 1 + x);
 				index.add((y + 1) * n + x);
+                                index.add(y * n + 1 + x);
+				index.add((y + 1) * n + x);
+                                index.add((y + 1) * n + 1 + x);
 			}
 		}
 

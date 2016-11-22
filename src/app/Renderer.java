@@ -84,7 +84,7 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glUseProgram(squareShader);
         gl.glUniformMatrix4fv(locMatSquare, 1, false, mat, 0);
 
-        square.draw(GL2.GL_QUADS, squareShader);
+        square.draw(GL2.GL_TRIANGLES, squareShader);
 
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
