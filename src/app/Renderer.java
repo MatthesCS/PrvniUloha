@@ -37,10 +37,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy;
 
-    OGLBuffers kulPlocha;
+    OGLBuffers kulPlocha, presHodiny;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kulPlochaShader, kulPlochaLocMat;
+    int kulPlochaShader, presHodinyShader, presHodinyLocMat, kulPlochaLocMat;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -54,9 +54,11 @@ public class Renderer implements GLEventListener, MouseListener,
         OGLUtils.shaderCheck(gl);
 
         kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
+        presHodinyShader = ShaderUtils.loadProgram(gl, "/shader/presHodiny");
         createBuffers(gl);
 
         kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
+        presHodinyLocMat = gl.glGetUniformLocation(presHodinyShader, "mat");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -68,6 +70,7 @@ public class Renderer implements GLEventListener, MouseListener,
     void createBuffers(GL2 gl)
     {
         kulPlocha = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        presHodiny = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
     @Override
@@ -84,6 +87,11 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glUniformMatrix4fv(kulPlochaLocMat, 1, false, mat, 0);
 
         kulPlocha.draw(GL2.GL_TRIANGLES, kulPlochaShader);
+        
+        gl.glUseProgram(presHodinyShader);
+        gl.glUniformMatrix4fv(presHodinyLocMat, 1, false, mat, 0);
+
+        presHodiny.draw(GL2.GL_TRIANGLES, presHodinyShader);
 
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
