@@ -83,20 +83,21 @@ public class Renderer implements GLEventListener, MouseListener,
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
 
-        gl.glUseProgram(kulPlochaShader);
-        gl.glUniformMatrix4fv(kulPlochaLocMat, 1, false, mat, 0);
-
-        kulPlocha.draw(GL2.GL_TRIANGLES, kulPlochaShader);
-        
-        gl.glUseProgram(presHodinyShader);
-        gl.glUniformMatrix4fv(presHodinyLocMat, 1, false, mat, 0);
-
-        presHodiny.draw(GL2.GL_TRIANGLES, presHodinyShader);
+        vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
+        vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
 
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+    }
+    
+    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, float[] mat)
+    {
+        gl.glUseProgram(shader);
+        gl.glUniformMatrix4fv(locMat, 1, false, mat, 0);
+
+        oglBuffer.draw(GL2.GL_TRIANGLES, shader);
     }
 
     @Override
