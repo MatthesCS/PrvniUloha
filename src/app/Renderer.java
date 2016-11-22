@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 
 import oglutils.OGLBuffers;
 import oglutils.OGLTextRenderer;
-import oglutils.OGLTexture2D;
 import oglutils.OGLUtils;
 import oglutils.ShaderUtils;
 import oglutils.ToFloatArray;
