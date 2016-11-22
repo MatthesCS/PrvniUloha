@@ -52,7 +52,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         OGLUtils.printOGLparameters(gl);
         OGLUtils.shaderCheck(gl);
-        
+
         squareShader = ShaderUtils.loadProgram(gl, "/shader/square");
         createBuffers(gl);
 
@@ -152,15 +152,19 @@ public class Renderer implements GLEventListener, MouseListener,
         switch (e.getKeyCode())
         {
             case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
                 cam = cam.forward(1);
                 break;
             case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
                 cam = cam.right(1);
                 break;
             case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
                 cam = cam.backward(1);
                 break;
             case KeyEvent.VK_A:
+            case KeyEvent.VK_LEFT:
                 cam = cam.left(1);
                 break;
             case KeyEvent.VK_CONTROL:
