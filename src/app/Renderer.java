@@ -37,10 +37,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy;
 
-    OGLBuffers square;
+    OGLBuffers kulPlocha;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int squareShader, locMatSquare;
+    int kulPlochaShader, kulPlochaLocMat;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -53,10 +53,10 @@ public class Renderer implements GLEventListener, MouseListener,
         OGLUtils.printOGLparameters(gl);
         OGLUtils.shaderCheck(gl);
 
-        squareShader = ShaderUtils.loadProgram(gl, "/shader/square");
+        kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
         createBuffers(gl);
 
-        locMatSquare = gl.glGetUniformLocation(squareShader, "mat");
+        kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -67,7 +67,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
     void createBuffers(GL2 gl)
     {
-        square = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        kulPlocha = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
     @Override
@@ -80,10 +80,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
 
-        gl.glUseProgram(squareShader);
-        gl.glUniformMatrix4fv(locMatSquare, 1, false, mat, 0);
+        gl.glUseProgram(kulPlochaShader);
+        gl.glUniformMatrix4fv(kulPlochaLocMat, 1, false, mat, 0);
 
-        square.draw(GL2.GL_TRIANGLES, squareShader);
+        kulPlocha.draw(GL2.GL_TRIANGLES, kulPlochaShader);
 
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
@@ -199,7 +199,7 @@ public class Renderer implements GLEventListener, MouseListener,
     public void dispose(GLAutoDrawable glDrawable)
     {
         GL2 gl = glDrawable.getGL().getGL2();
-        gl.glDeleteProgram(squareShader);
+        gl.glDeleteProgram(kulPlochaShader);
     }
 
 }
