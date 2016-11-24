@@ -37,10 +37,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy;
 
-    OGLBuffers kulPlocha, presHodiny;
+    OGLBuffers kulPlocha, presHodiny, sud;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kulPlochaShader, presHodinyShader, presHodinyLocMat, kulPlochaLocMat;
+    int kulPlochaShader, presHodinyShader, sudShader, sudLocMat, presHodinyLocMat, kulPlochaLocMat;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -55,10 +55,13 @@ public class Renderer implements GLEventListener, MouseListener,
 
         kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
         presHodinyShader = ShaderUtils.loadProgram(gl, "/shader/presHodiny");
+        sudShader = ShaderUtils.loadProgram(gl, "/shader/sud");
+        
         createBuffers(gl);
 
         kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
         presHodinyLocMat = gl.glGetUniformLocation(presHodinyShader, "mat");
+        sudLocMat = gl.glGetUniformLocation(sudShader, "mat");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -71,6 +74,7 @@ public class Renderer implements GLEventListener, MouseListener,
     {
         kulPlocha = MeshGenerator.createGrid(gl, 20, "inParamPos");
         presHodiny = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        sud = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
     @Override
@@ -83,9 +87,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
 
-        vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
-        vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
-
+        //vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
+        //vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
+        vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, mat);
+        
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
