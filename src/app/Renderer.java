@@ -37,12 +37,12 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy, vykresli, barva, objekt;
 
-    OGLBuffers kulPlocha, presHodiny, sud, kartezsky;
+    OGLBuffers kartezsky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kulPlochaShader, presHodinyShader, sudShader, kartezskyShader;
-    int sudLocMat, presHodinyLocMat, kulPlochaLocMat, kartezskyLocMat;
-    int sudLocBarva, presHodinyLocBarva, kulPlochaLocBarva, kartezskyLocBarva;
+    int kartezskyShader;
+    int kartezskyLocMat;
+    int kartezskyLocBarva;
     int kartezskyLocObjekt;
 
     Camera cam = new Camera();
@@ -56,21 +56,12 @@ public class Renderer implements GLEventListener, MouseListener,
         OGLUtils.printOGLparameters(gl);
         OGLUtils.shaderCheck(gl);
 
-        kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
-        presHodinyShader = ShaderUtils.loadProgram(gl, "/shader/presHodiny");
-        sudShader = ShaderUtils.loadProgram(gl, "/shader/sud");
         kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
 
         createBuffers(gl);
 
-        kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
-        presHodinyLocMat = gl.glGetUniformLocation(presHodinyShader, "mat");
-        sudLocMat = gl.glGetUniformLocation(sudShader, "mat");
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
 
-        kulPlochaLocBarva = gl.glGetUniformLocation(kulPlochaShader, "barva");
-        presHodinyLocBarva = gl.glGetUniformLocation(presHodinyShader, "barva");
-        sudLocBarva = gl.glGetUniformLocation(sudShader, "barva");
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
         
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
@@ -88,9 +79,6 @@ public class Renderer implements GLEventListener, MouseListener,
 
     void createBuffers(GL2 gl)
     {
-        kulPlocha = MeshGenerator.createGrid(gl, 20, "inParamPos");
-        presHodiny = MeshGenerator.createGrid(gl, 20, "inParamPos");
-        sud = MeshGenerator.createGrid(gl, 20, "inParamPos");
         kartezsky = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
@@ -106,18 +94,17 @@ public class Renderer implements GLEventListener, MouseListener,
 
         if (vykresli % 10 == 1)
         {
-            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, kulPlochaLocBarva, 1, mat);
+            vykresliTrojuhelniky(gl, kartezsky, kartezskyShader, kartezskyLocMat, kartezskyLocBarva, kartezskyLocObjekt, mat);
         }
         if (vykresli % 100 >= 10)
         {
-            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, kulPlochaLocBarva, 0, mat);
+            //sférické
         }
         if (vykresli % 1000 >= 100)
         {
-            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, sudLocBarva, 0, mat);
+            //cylindrické
         }
-        vykresliTrojuhelniky(gl, kartezsky, kartezskyShader, kartezskyLocMat, kartezskyLocBarva, kartezskyLocObjekt, mat);
-
+        
         String barvaText = "";
         switch (barva)
         {
@@ -318,7 +305,7 @@ public class Renderer implements GLEventListener, MouseListener,
     public void dispose(GLAutoDrawable glDrawable)
     {
         GL2 gl = glDrawable.getGL().getGL2();
-        gl.glDeleteProgram(kulPlochaShader);
+        gl.glDeleteProgram(kartezskyShader);
     }
 
 }
