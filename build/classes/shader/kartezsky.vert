@@ -30,6 +30,19 @@ vec3 kulPlocha(vec2 paramPos)
 	);
 }
 
+vec3 mobius(vec2 paramPos)
+{
+// vytvořeno podle: http://www.math.uri.edu/~bkaskosz/flashmo/tools/parsur/
+
+        float x = paramPos.x * 2 * PI;
+        float y = paramPos.y - 0.5;
+	return vec3(
+		2*cos(x)+y*cos(x/2),
+		2*sin(x)+y*cos(x/2),
+		y*sin(x/2)
+	);
+}
+
 vec3 presHodiny(vec2 paramPos)
 {
 // vytvořeno podle: http://www.math.uri.edu/~bkaskosz/flashmo/tools/parsur/
@@ -56,6 +69,10 @@ vec3 surface(vec2 paramPos)
     else if(objekt == 2)
     {
        return sud(paramPos);
+    }
+    else if(objekt == 3)
+    {
+       return mobius(paramPos);
     }
 }
 

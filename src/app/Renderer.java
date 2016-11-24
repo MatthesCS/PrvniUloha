@@ -283,7 +283,7 @@ public class Renderer implements GLEventListener, MouseListener,
             case KeyEvent.VK_O:
             case KeyEvent.VK_ENTER:
                 objekt++;
-                if(objekt>=3)
+                if(objekt>3)
                 {
                     objekt=0;
                 }
