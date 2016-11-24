@@ -35,14 +35,15 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy, vykresli, barva;
+    int width, height, ox, oy, vykresli, barva, objekt;
 
-    OGLBuffers kulPlocha, presHodiny, sud;
+    OGLBuffers kulPlocha, presHodiny, sud, kartezsky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kulPlochaShader, presHodinyShader, sudShader;
-    int sudLocMat, presHodinyLocMat, kulPlochaLocMat;
-    int sudLocBarva, presHodinyLocBarva, kulPlochaLocBarva;
+    int kulPlochaShader, presHodinyShader, sudShader, kartezskyShader;
+    int sudLocMat, presHodinyLocMat, kulPlochaLocMat, kartezskyLocMat;
+    int sudLocBarva, presHodinyLocBarva, kulPlochaLocBarva, kartezskyLocBarva;
+    int kartezskyLocObjekt;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -58,16 +59,21 @@ public class Renderer implements GLEventListener, MouseListener,
         kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
         presHodinyShader = ShaderUtils.loadProgram(gl, "/shader/presHodiny");
         sudShader = ShaderUtils.loadProgram(gl, "/shader/sud");
+        kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
 
         createBuffers(gl);
 
         kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
         presHodinyLocMat = gl.glGetUniformLocation(presHodinyShader, "mat");
         sudLocMat = gl.glGetUniformLocation(sudShader, "mat");
+        kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
 
         kulPlochaLocBarva = gl.glGetUniformLocation(kulPlochaShader, "barva");
         presHodinyLocBarva = gl.glGetUniformLocation(presHodinyShader, "barva");
         sudLocBarva = gl.glGetUniformLocation(sudShader, "barva");
+        kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
+        
+        kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -77,6 +83,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         vykresli = 0;
         barva = 1;
+        objekt = 0;
     }
 
     void createBuffers(GL2 gl)
@@ -84,6 +91,7 @@ public class Renderer implements GLEventListener, MouseListener,
         kulPlocha = MeshGenerator.createGrid(gl, 20, "inParamPos");
         presHodiny = MeshGenerator.createGrid(gl, 20, "inParamPos");
         sud = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        kartezsky = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
     @Override
@@ -98,16 +106,17 @@ public class Renderer implements GLEventListener, MouseListener,
 
         if (vykresli % 10 == 1)
         {
-            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, kulPlochaLocBarva, mat);
+            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, kulPlochaLocBarva, 1, mat);
         }
         if (vykresli % 100 >= 10)
         {
-            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, kulPlochaLocBarva, mat);
+            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, kulPlochaLocBarva, 0, mat);
         }
         if (vykresli % 1000 >= 100)
         {
-            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, sudLocBarva, mat);
+            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, sudLocBarva, 0, mat);
         }
+        vykresliTrojuhelniky(gl, kartezsky, kartezskyShader, kartezskyLocMat, kartezskyLocBarva, kartezskyLocObjekt, mat);
 
         String barvaText = "";
         switch (barva)
@@ -145,12 +154,13 @@ public class Renderer implements GLEventListener, MouseListener,
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
     }
 
-    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, int locBarva, float[] mat)
+    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, int locBarva, int locObjekt, float[] mat)
     {
         gl.glUseProgram(shader);
         gl.glUniformMatrix4fv(locMat, 1, false, mat, 0);
         gl.glUniform1f(locBarva, (float) barva);
-
+        gl.glUniform1f(locObjekt, (float) objekt);
+        
         oglBuffer.draw(GL2.GL_TRIANGLES, shader);
     }
 
@@ -281,6 +291,14 @@ public class Renderer implements GLEventListener, MouseListener,
                 } else
                 {
                     vykresli -= 100;
+                }
+                break;
+            case KeyEvent.VK_O:
+            case KeyEvent.VK_ENTER:
+                objekt++;
+                if(objekt>=3)
+                {
+                    objekt=0;
                 }
                 break;
         }
