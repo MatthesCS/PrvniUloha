@@ -102,7 +102,7 @@ public class Renderer implements GLEventListener, MouseListener,
             vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, mat);
         }
 
-        String text = this.getClass().getName() + ": [LMB] camera, WSAD";
+        String text = this.getClass().getName() + ": kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], vykreslování: [1-3]";
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
