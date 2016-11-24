@@ -35,7 +35,7 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy;
+    int width, height, ox, oy, vykresli;
 
     OGLBuffers kulPlocha, presHodiny, sud;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
@@ -56,7 +56,7 @@ public class Renderer implements GLEventListener, MouseListener,
         kulPlochaShader = ShaderUtils.loadProgram(gl, "/shader/kulPlocha");
         presHodinyShader = ShaderUtils.loadProgram(gl, "/shader/presHodiny");
         sudShader = ShaderUtils.loadProgram(gl, "/shader/sud");
-        
+
         createBuffers(gl);
 
         kulPlochaLocMat = gl.glGetUniformLocation(kulPlochaShader, "mat");
@@ -68,6 +68,8 @@ public class Renderer implements GLEventListener, MouseListener,
                 .withZenith(Math.PI * -0.125);
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
+
+        vykresli = 0;
     }
 
     void createBuffers(GL2 gl)
@@ -86,17 +88,26 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
-
-        //vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
-        //vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
-        vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, mat);
         
+        if (vykresli % 10 == 1)
+        {
+            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
+        }
+        if (vykresli % 100 >= 10)
+        {
+            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
+        }
+        if (vykresli % 1000 >= 100)
+        {
+            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, mat);
+        }
+
         String text = this.getClass().getName() + ": [LMB] camera, WSAD";
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
     }
-    
+
     public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, float[] mat)
     {
         gl.glUseProgram(shader);
@@ -195,6 +206,36 @@ public class Renderer implements GLEventListener, MouseListener,
                 break;
             case KeyEvent.VK_F:
                 cam = cam.mulRadius(1.1f);
+                break;
+            case KeyEvent.VK_1:
+            case KeyEvent.VK_NUMPAD1:
+                if (vykresli % 10 == 0)
+                {
+                    vykresli++;
+                } else
+                {
+                    vykresli--;
+                }
+                break;
+            case KeyEvent.VK_2:
+            case KeyEvent.VK_NUMPAD2:
+                if (vykresli % 100 < 10)
+                {
+                    vykresli += 10;
+                } else
+                {
+                    vykresli -= 10;
+                }
+                break;
+            case KeyEvent.VK_3:
+            case KeyEvent.VK_NUMPAD3:
+                if (vykresli % 1000 < 100)
+                {
+                    vykresli += 100;
+                } else
+                {
+                    vykresli -= 100;
+                }
                 break;
         }
     }
