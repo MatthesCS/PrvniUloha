@@ -35,12 +35,14 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy, vykresli;
+    int width, height, ox, oy, vykresli, barva;
 
     OGLBuffers kulPlocha, presHodiny, sud;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kulPlochaShader, presHodinyShader, sudShader, sudLocMat, presHodinyLocMat, kulPlochaLocMat;
+    int kulPlochaShader, presHodinyShader, sudShader;
+    int sudLocMat, presHodinyLocMat, kulPlochaLocMat;
+    int sudLocBarva, presHodinyLocBarva, kulPlochaLocBarva;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -63,6 +65,10 @@ public class Renderer implements GLEventListener, MouseListener,
         presHodinyLocMat = gl.glGetUniformLocation(presHodinyShader, "mat");
         sudLocMat = gl.glGetUniformLocation(sudShader, "mat");
 
+        kulPlochaLocBarva = gl.glGetUniformLocation(kulPlochaShader, "barva");
+        presHodinyLocBarva = gl.glGetUniformLocation(presHodinyShader, "barva");
+        sudLocBarva = gl.glGetUniformLocation(sudShader, "barva");
+
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
                 .withZenith(Math.PI * -0.125);
@@ -70,6 +76,7 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         vykresli = 0;
+        barva = 1;
     }
 
     void createBuffers(GL2 gl)
@@ -88,30 +95,61 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
-        
+
         if (vykresli % 10 == 1)
         {
-            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, mat);
+            vykresliTrojuhelniky(gl, kulPlocha, kulPlochaShader, kulPlochaLocMat, kulPlochaLocBarva, mat);
         }
         if (vykresli % 100 >= 10)
         {
-            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, mat);
+            vykresliTrojuhelniky(gl, presHodiny, presHodinyShader, presHodinyLocMat, kulPlochaLocBarva, mat);
         }
         if (vykresli % 1000 >= 100)
         {
-            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, mat);
+            vykresliTrojuhelniky(gl, sud, sudShader, sudLocMat, sudLocBarva, mat);
         }
 
-        String text = this.getClass().getName() + ": kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], vykreslování: [1-3]";
+        String barvaText = "";
+        switch (barva)
+        {
+            case 0:
+                barvaText = "černá";
+                break;
+            case 1:
+                barvaText = "červená";
+                break;
+            case 2:
+                barvaText = "zelená";
+                break;
+            case 3:
+                barvaText = "modrá";
+                break;
+            case 4:
+                barvaText = "bílá";
+                break;
+            case 5:
+                barvaText = "podle parametrů";
+                break;
+            case 6:
+                barvaText = "podle pozice";
+                break;
+            case 7:
+                barvaText = "podle normál";
+                break;
+        }
+        String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], vykreslování: [1-3],";
+        String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText;
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
+        textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
     }
 
-    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, float[] mat)
+    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, int locBarva, float[] mat)
     {
         gl.glUseProgram(shader);
         gl.glUniformMatrix4fv(locMat, 1, false, mat, 0);
+        gl.glUniform1f(locBarva, (float) barva);
 
         oglBuffer.draw(GL2.GL_TRIANGLES, shader);
     }
@@ -206,6 +244,14 @@ public class Renderer implements GLEventListener, MouseListener,
                 break;
             case KeyEvent.VK_F:
                 cam = cam.mulRadius(1.1f);
+                break;
+            case KeyEvent.VK_B:
+            case KeyEvent.VK_NUMPAD0:
+                barva++;
+                if (barva > 7)
+                {
+                    barva = 0;
+                }
                 break;
             case KeyEvent.VK_1:
             case KeyEvent.VK_NUMPAD1:
