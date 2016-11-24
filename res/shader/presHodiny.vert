@@ -5,6 +5,7 @@ uniform mat4 mat;
 uniform float barva;
 
 const float PI = 3.1415927;
+const float DELTA = 0.001;
 
 vec3 surface(vec2 paramPos)
 {
@@ -18,6 +19,14 @@ vec3 surface(vec2 paramPos)
 		y*sin(x),
 		y
 	);
+}
+
+vec3 normal(vec2 paramPos)
+{
+        vec2 dx = vec2(DELTA, 0), dy = vec2(0, DELTA);
+	vec3 tx = surface(paramPos + dx) - surface(paramPos - dx);
+	vec3 ty = surface(paramPos + dy) - surface(paramPos - dy);
+	return normalize(cross(tx, ty));
 }
 
 vec3 color(float barva, vec3 position)
@@ -53,8 +62,7 @@ vec3 color(float barva, vec3 position)
         }
         else if(barva==7)
         {
-                vec3 normal = vec3(1,1,1);
-                c = vec3(normal);
+                c = normal(inParamPos);
         }
    return c;
 }
