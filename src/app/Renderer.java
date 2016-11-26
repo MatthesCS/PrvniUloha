@@ -39,13 +39,13 @@ public class Renderer implements GLEventListener, MouseListener,
 
     boolean pocetBoduZmenen;
 
-    OGLBuffers kartezsky, sfericky;
+    OGLBuffers kartezsky, sfericky, cylidnricky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kartezskyShader, sferickyShader;
-    int kartezskyLocMat, sferickyLocMat;
-    int kartezskyLocBarva, sferickyLocBarva;
-    int kartezskyLocObjekt, sferickyLocObjekt;
+    int kartezskyShader, sferickyShader, cylindrickyShader;
+    int kartezskyLocMat, sferickyLocMat, cylindrickyLocMat;
+    int kartezskyLocBarva, sferickyLocBarva, cylindrickyLocBarva;
+    int kartezskyLocObjekt, sferickyLocObjekt, cylindrickyLocObjekt;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -60,6 +60,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
         sferickyShader = ShaderUtils.loadProgram(gl, "/shader/sfericky");
+        cylindrickyShader = ShaderUtils.loadProgram(gl, "/shader/cylindricky");
 
         pocetBodu = 20;
         createBuffers(gl);
@@ -71,6 +72,10 @@ public class Renderer implements GLEventListener, MouseListener,
         sferickyLocMat = gl.glGetUniformLocation(sferickyShader, "mat");
         sferickyLocBarva = gl.glGetUniformLocation(sferickyShader, "barva");
         sferickyLocObjekt = gl.glGetUniformLocation(sferickyShader, "objekt");
+        
+        cylindrickyLocMat = gl.glGetUniformLocation(cylindrickyShader, "mat");
+        cylindrickyLocBarva = gl.glGetUniformLocation(cylindrickyShader, "barva");
+        cylindrickyLocObjekt = gl.glGetUniformLocation(cylindrickyShader, "objekt");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -79,9 +84,9 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         barva = 1;
-        kartez = 5;
+        kartez = 0;
         sferic = 0;
-        cylindr = 0;
+        cylindr = 1;
 
         pocetBoduZmenen = false;
     }
@@ -90,6 +95,7 @@ public class Renderer implements GLEventListener, MouseListener,
     {
         kartezsky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
         sfericky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
+        cylidnricky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
     }
 
     @Override
@@ -128,7 +134,12 @@ public class Renderer implements GLEventListener, MouseListener,
         }
         if (cylindr > 0)
         {
-            //cylindrické
+            gl.glUseProgram(cylindrickyShader);
+            gl.glUniformMatrix4fv(cylindrickyLocMat, 1, false, mat, 0);
+            gl.glUniform1f(cylindrickyLocBarva, (float) barva);
+            gl.glUniform1f(cylindrickyLocObjekt, (float) cylindr);
+
+            cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
         }
 
         String barvaText = "";
@@ -183,7 +194,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektCylindricky = "žádný";
                 break;
             case 1:
-                objektCylindricky = "nic";
+                objektCylindricky = "kliková hřídel";
                 break;
             case 2:
                 objektCylindricky = "nic";
@@ -232,7 +243,7 @@ public class Renderer implements GLEventListener, MouseListener,
         textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
         textRenderer.drawStr2D(glDrawable, 3, 20, objekty);
-        textRenderer.drawStr2D(glDrawable, 3, 5, objekty2);
+        textRenderer.drawStr2D(glDrawable, 122, 5, objekty2);
     }
 
     @Override
