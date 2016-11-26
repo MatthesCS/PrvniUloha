@@ -63,7 +63,7 @@ vec3 surface(vec2 paramPos)
 
     if(objekt == 1)
     {
-        souradnice = klikovaHridel(paramPos);
+        souradnice = kulPlocha(paramPos);
     }
     else if(objekt == 2)
     {
@@ -71,7 +71,7 @@ vec3 surface(vec2 paramPos)
     }
     else if(objekt == 3)
     {
-       souradnice = kulPlocha(paramPos);
+       souradnice = klikovaHridel(paramPos);
     }
     else if(objekt == 4)
     {
