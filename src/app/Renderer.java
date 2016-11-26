@@ -150,13 +150,13 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektSfericky = "žádný";
                 break;
             case 1:
-                objektSfericky = "nic";
+                objektSfericky = "kulová plocha";
                 break;
             case 2:
-                objektSfericky = "nic";
+                objektSfericky = "burák";
                 break;
             case 3:
-                objektSfericky = "nic";
+                objektSfericky = "list";
                 break;
             case 4:
                 objektSfericky = "nic";
