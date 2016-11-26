@@ -15,16 +15,16 @@ vec3 klikovaHridel(vec2 paramPos)
         float x = paramPos.x * 2 * PI;
         float y = paramPos.y * 2 * PI - PI;
 	return vec3(
-		x,
 		2+cos(2*y)*sin(x),
+		x,
 		y
 	);
 }
 
 vec3 prepocet(vec3 paramPos)
 {
-    float azimut = paramPos.x;
-    float r = paramPos.y;
+    float r = paramPos.x;
+    float azimut = paramPos.y;
     float v = paramPos.z;
     return vec3(
         r*cos(azimut),

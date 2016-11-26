@@ -83,7 +83,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
-        barva = 1;
+        barva = 5;
         kartez = 0;
         sferic = 0;
         cylindr = 1;
