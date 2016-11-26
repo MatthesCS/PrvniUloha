@@ -45,6 +45,17 @@ vec3 list(vec2 paramPos)
 	);
 }
 
+vec3 pohar(vec2 paramPos)
+{
+        float x = paramPos.x*2-1;
+        float y = paramPos.y*2*PI;
+	return vec3(
+		sin(x),
+		y,
+		cos(x*x)
+	);
+}
+
 vec3 prepocet(vec3 paramPos)
 {
     float r = paramPos.x;
@@ -75,7 +86,7 @@ vec3 surface(vec2 paramPos)
     }
     else if(objekt == 4)
     {
-       souradnice = burak(paramPos);
+       souradnice = pohar(paramPos);
     }
 
     return prepocet(souradnice);

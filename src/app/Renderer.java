@@ -77,7 +77,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         barva = 1;
         kartez = 0;
-        sferic = 3;
+        sferic = 4;
         cylindr = 0;
     }
 
@@ -159,7 +159,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektSfericky = "list";
                 break;
             case 4:
-                objektSfericky = "nic";
+                objektSfericky = "pohár";
                 break;
         }
         
