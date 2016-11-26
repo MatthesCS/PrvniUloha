@@ -1,6 +1,9 @@
 #version 150
 in vec2 inParamPos;
 out vec3 vertColor;
+out vec3 light;
+out vec3 vertNormal;
+uniform vec3 poziceSvetla;
 uniform mat4 mat;
 uniform float barva;
 uniform float objekt;
@@ -142,4 +145,13 @@ void main() {
 	vec3 position = surface(inParamPos);
 	gl_Position = mat * vec4(position, 1.0);
         vertColor = color(barva, position);
+        if(poziceSvetla.x == 0 && poziceSvetla.y == 0 && poziceSvetla.z == 0)
+        {
+            light = vec3(0,0,0);
+        }
+        else
+        {
+            light = poziceSvetla - position;
+        }
+        vertNormal = normal(inParamPos);
 }

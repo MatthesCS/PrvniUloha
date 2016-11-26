@@ -35,7 +35,9 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu;
+    int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu, pozSvetla;
+
+    Vec3D poziceSvetla;
 
     boolean pocetBoduZmenen;
 
@@ -46,6 +48,7 @@ public class Renderer implements GLEventListener, MouseListener,
     int kartezskyLocMat, sferickyLocMat, cylindrickyLocMat;
     int kartezskyLocBarva, sferickyLocBarva, cylindrickyLocBarva;
     int kartezskyLocObjekt, sferickyLocObjekt, cylindrickyLocObjekt;
+    int kartezskyLocPozSvetla, sferickyLocPozSvetla, cylindrickyLocPozSvetla;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -68,14 +71,17 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
+        kartezskyLocPozSvetla = gl.glGetUniformLocation(kartezskyShader, "poziceSvetla");
 
         sferickyLocMat = gl.glGetUniformLocation(sferickyShader, "mat");
         sferickyLocBarva = gl.glGetUniformLocation(sferickyShader, "barva");
         sferickyLocObjekt = gl.glGetUniformLocation(sferickyShader, "objekt");
-        
+        sferickyLocPozSvetla = gl.glGetUniformLocation(sferickyShader, "poziceSvetla");
+
         cylindrickyLocMat = gl.glGetUniformLocation(cylindrickyShader, "mat");
         cylindrickyLocBarva = gl.glGetUniformLocation(cylindrickyShader, "barva");
         cylindrickyLocObjekt = gl.glGetUniformLocation(cylindrickyShader, "objekt");
+        cylindrickyLocPozSvetla = gl.glGetUniformLocation(cylindrickyShader, "poziceSvetla");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -84,9 +90,12 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         barva = 5;
-        kartez = 0;
+        kartez = 1;
         sferic = 0;
-        cylindr = 1;
+        cylindr = 0;
+
+        pozSvetla = 0;
+        poziceSvetla = new Vec3D(5, 5, 5);
 
         pocetBoduZmenen = false;
     }
@@ -120,6 +129,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(kartezskyLocMat, 1, false, mat, 0);
             gl.glUniform1f(kartezskyLocBarva, (float) barva);
             gl.glUniform1f(kartezskyLocObjekt, (float) kartez);
+            gl.glUniform3f(kartezskyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
 
             kartezsky.draw(GL2.GL_TRIANGLES, kartezskyShader);
         }
@@ -129,6 +139,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(sferickyLocMat, 1, false, mat, 0);
             gl.glUniform1f(sferickyLocBarva, (float) barva);
             gl.glUniform1f(sferickyLocObjekt, (float) sferic);
+            gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
 
             sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
         }
@@ -138,6 +149,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(cylindrickyLocMat, 1, false, mat, 0);
             gl.glUniform1f(cylindrickyLocBarva, (float) barva);
             gl.glUniform1f(cylindrickyLocObjekt, (float) cylindr);
+            gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
 
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
         }
@@ -146,6 +158,39 @@ public class Renderer implements GLEventListener, MouseListener,
         String objektKartezsky = "";
         String objektSfericky = "";
         String objektCylindricky = "";
+        String svetlo = "";
+
+        switch (pozSvetla)
+        {
+            case 0:
+                poziceSvetla = new Vec3D(0, 0, 0);
+                svetlo = "vypnuto";
+                break;
+            case 1:
+                poziceSvetla = new Vec3D(5, 5, 5);
+                svetlo = "5,5,5";
+                break;
+            case 2:
+                poziceSvetla = new Vec3D(-5, 5, 5);
+                svetlo = "-5,5,5";
+                break;
+            case 3:
+                poziceSvetla = new Vec3D(-5, -5, 10);
+                svetlo = "-5,-5,5";
+                break;
+            case 4:
+                poziceSvetla = new Vec3D(5, -5, 5);
+                svetlo = "5,-5,5";
+                break;
+            case 5:
+                poziceSvetla = new Vec3D(0, 0, 5);
+                svetlo = "0,0,5";
+                break;
+            case 6:
+                poziceSvetla = new Vec3D(0, 0, -5);
+                svetlo = "0,0,-5";
+                break;
+        }
 
         switch (kartez)
         {
@@ -236,11 +281,13 @@ public class Renderer implements GLEventListener, MouseListener,
         }
         String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], ";
         String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText + ", počet bodů -[4] +[5]:" + pocetBodu;
+        String svetloText = "Pozice světla [6]: " + svetlo;
         String objekty = "Vykreslované objekty: Kartézský [1]: " + objektKartezsky + "; sférický [2]: " + objektSfericky + ";";
         String objekty2 = "cylindrický [3]: " + objektCylindricky;
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
+        textRenderer.drawStr2D(glDrawable, 3, height - 50, svetloText);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
         textRenderer.drawStr2D(glDrawable, 3, 20, objekty);
         textRenderer.drawStr2D(glDrawable, 122, 5, objekty2);
@@ -384,6 +431,14 @@ public class Renderer implements GLEventListener, MouseListener,
                     pocetBodu--;
                 }
                 pocetBoduZmenen = true;
+                break;
+            case KeyEvent.VK_6:
+            case KeyEvent.VK_NUMPAD6:
+                pozSvetla++;
+                if (pozSvetla > 5)
+                {
+                    pozSvetla = 0;
+                }
                 break;
         }
     }
