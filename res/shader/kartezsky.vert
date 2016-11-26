@@ -58,19 +58,19 @@ vec3 presHodiny(vec2 paramPos)
 
 vec3 surface(vec2 paramPos)
 {
-    if(objekt == 0)
+    if(objekt == 1)
     {
         return kulPlocha(paramPos);
     }
-    else if(objekt == 1)
+    else if(objekt == 2)
     {
         return presHodiny(paramPos);
     }
-    else if(objekt == 2)
+    else if(objekt == 3)
     {
        return sud(paramPos);
     }
-    else if(objekt == 3)
+    else if(objekt == 4)
     {
        return mobius(paramPos);
     }

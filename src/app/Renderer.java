@@ -35,7 +35,7 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy, vykresli, barva, objekt;
+    int width, height, ox, oy, barva, kartez, sferic, cylindr;
 
     OGLBuffers kartezsky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
@@ -61,9 +61,7 @@ public class Renderer implements GLEventListener, MouseListener,
         createBuffers(gl);
 
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
-
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
-        
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
@@ -72,9 +70,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
-        vykresli = 0;
         barva = 1;
-        objekt = 0;
+        kartez = 1;
+        sferic = 0;
+        cylindr = 0;
     }
 
     void createBuffers(GL2 gl)
@@ -92,19 +91,24 @@ public class Renderer implements GLEventListener, MouseListener,
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
 
-        if (vykresli % 10 == 1)
+        if (kartez > 0)
         {
-            vykresliTrojuhelniky(gl, kartezsky, kartezskyShader, kartezskyLocMat, kartezskyLocBarva, kartezskyLocObjekt, mat);
+            gl.glUseProgram(kartezskyShader);
+            gl.glUniformMatrix4fv(kartezskyLocMat, 1, false, mat, 0);
+            gl.glUniform1f(kartezskyLocBarva, (float) barva);
+            gl.glUniform1f(kartezskyLocObjekt, (float) kartez);
+
+            kartezsky.draw(GL2.GL_TRIANGLES, kartezskyShader);
         }
-        if (vykresli % 100 >= 10)
+        if (sferic > 0)
         {
             //sférické
         }
-        if (vykresli % 1000 >= 100)
+        if (cylindr > 0)
         {
             //cylindrické
         }
-        
+
         String barvaText = "";
         switch (barva)
         {
@@ -139,16 +143,6 @@ public class Renderer implements GLEventListener, MouseListener,
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
-    }
-
-    public void vykresliTrojuhelniky(GL2 gl, OGLBuffers oglBuffer, int shader, int locMat, int locBarva, int locObjekt, float[] mat)
-    {
-        gl.glUseProgram(shader);
-        gl.glUniformMatrix4fv(locMat, 1, false, mat, 0);
-        gl.glUniform1f(locBarva, (float) barva);
-        gl.glUniform1f(locObjekt, (float) objekt);
-        
-        oglBuffer.draw(GL2.GL_TRIANGLES, shader);
     }
 
     @Override
@@ -252,40 +246,26 @@ public class Renderer implements GLEventListener, MouseListener,
                 break;
             case KeyEvent.VK_1:
             case KeyEvent.VK_NUMPAD1:
-                if (vykresli % 10 == 0)
+                kartez++;
+                if (kartez > 4)
                 {
-                    vykresli++;
-                } else
-                {
-                    vykresli--;
+                    kartez = 0;
                 }
                 break;
             case KeyEvent.VK_2:
             case KeyEvent.VK_NUMPAD2:
-                if (vykresli % 100 < 10)
+                sferic++;
+                if (sferic > 4)
                 {
-                    vykresli += 10;
-                } else
-                {
-                    vykresli -= 10;
+                    sferic = 0;
                 }
                 break;
             case KeyEvent.VK_3:
             case KeyEvent.VK_NUMPAD3:
-                if (vykresli % 1000 < 100)
+                cylindr++;
+                if (cylindr > 4)
                 {
-                    vykresli += 100;
-                } else
-                {
-                    vykresli -= 100;
-                }
-                break;
-            case KeyEvent.VK_O:
-            case KeyEvent.VK_ENTER:
-                objekt++;
-                if(objekt>3)
-                {
-                    objekt=0;
+                    cylindr = 0;
                 }
                 break;
         }
