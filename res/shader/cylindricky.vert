@@ -21,6 +21,30 @@ vec3 klikovaHridel(vec2 paramPos)
 	);
 }
 
+vec3 sombrero(vec2 paramPos)
+{
+// vytvořeno podle: http://www.math.uri.edu/~bkaskosz/flashmo/tools/cylin/
+
+        float x = paramPos.x * 2 * PI;
+        float y = paramPos.y * 2 * PI;
+	return vec3(
+		y,
+		x,
+		2*sin(y)
+	);
+}
+
+vec3 kulPlocha(vec2 paramPos)
+{
+        float x = paramPos.x * 2 * PI;
+        float y = paramPos.y * PI;
+	return vec3(
+		sin(y),
+		x,
+		cos(y)
+	);
+}
+
 vec3 prepocet(vec3 paramPos)
 {
     float r = paramPos.x;
@@ -43,11 +67,11 @@ vec3 surface(vec2 paramPos)
     }
     else if(objekt == 2)
     {
-        souradnice = klikovaHridel(paramPos);
+        souradnice = sombrero(paramPos);
     }
     else if(objekt == 3)
     {
-       souradnice = klikovaHridel(paramPos);
+       souradnice = kulPlocha(paramPos);
     }
     else if(objekt == 4)
     {

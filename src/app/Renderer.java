@@ -197,7 +197,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektCylindricky = "kliková hřídel";
                 break;
             case 2:
-                objektCylindricky = "nic";
+                objektCylindricky = "sombréro";
                 break;
             case 3:
                 objektCylindricky = "nic";
