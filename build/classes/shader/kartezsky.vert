@@ -56,6 +56,18 @@ vec3 presHodiny(vec2 paramPos)
 	);
 }
 
+vec3 turbina(vec2 paramPos)
+{
+        float x = paramPos.x * 2 * PI;
+        float y = paramPos.y * PI;
+        float r = 2 + sin(7*x+5*y);
+	return vec3(
+		r*cos(x)*sin(y),
+		r*sin(x)*sin(y),
+		r*cos(y)
+	);
+}
+
 vec3 surface(vec2 paramPos)
 {
     if(objekt == 1)
@@ -73,6 +85,10 @@ vec3 surface(vec2 paramPos)
     else if(objekt == 4)
     {
        return mobius(paramPos);
+    }
+    else if(objekt == 5)
+    {
+       return turbina(paramPos);
     }
 }
 

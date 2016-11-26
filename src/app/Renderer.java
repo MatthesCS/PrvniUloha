@@ -64,7 +64,7 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
-        
+
         sferickyLocMat = gl.glGetUniformLocation(sferickyShader, "mat");
         sferickyLocBarva = gl.glGetUniformLocation(sferickyShader, "barva");
         sferickyLocObjekt = gl.glGetUniformLocation(sferickyShader, "objekt");
@@ -76,8 +76,8 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         barva = 1;
-        kartez = 0;
-        sferic = 4;
+        kartez = 5;
+        sferic = 0;
         cylindr = 0;
     }
 
@@ -124,7 +124,7 @@ public class Renderer implements GLEventListener, MouseListener,
         String objektKartezsky = "";
         String objektSfericky = "";
         String objektCylindricky = "";
-        
+
         switch (kartez)
         {
             case 0:
@@ -142,8 +142,11 @@ public class Renderer implements GLEventListener, MouseListener,
             case 4:
                 objektKartezsky = "mobius band";
                 break;
+            case 5:
+                objektKartezsky = "turbína";
+                break;
         }
-        
+
         switch (sferic)
         {
             case 0:
@@ -162,7 +165,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektSfericky = "pohár";
                 break;
         }
-        
+
         switch (cylindr)
         {
             case 0:
@@ -181,7 +184,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 objektCylindricky = "nic";
                 break;
         }
-        
+
         switch (barva)
         {
             case 0:
@@ -212,7 +215,7 @@ public class Renderer implements GLEventListener, MouseListener,
         String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], ";
         String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText;
         String objekty = "Vykreslované objekty: Kartézský [1]: " + objektKartezsky + "; sférický [2]: " + objektSfericky + ";";
-        String objekty2 =  "cylindrický [3]: " + objektCylindricky;
+        String objekty2 = "cylindrický [3]: " + objektCylindricky;
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
@@ -323,7 +326,7 @@ public class Renderer implements GLEventListener, MouseListener,
             case KeyEvent.VK_1:
             case KeyEvent.VK_NUMPAD1:
                 kartez++;
-                if (kartez > 4)
+                if (kartez > 5)
                 {
                     kartez = 0;
                 }
