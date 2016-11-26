@@ -35,7 +35,9 @@ public class Renderer implements GLEventListener, MouseListener,
         MouseMotionListener, KeyListener
 {
 
-    int width, height, ox, oy, barva, kartez, sferic, cylindr;
+    int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu;
+
+    boolean pocetBoduZmenen;
 
     OGLBuffers kartezsky, sfericky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
@@ -59,6 +61,7 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
         sferickyShader = ShaderUtils.loadProgram(gl, "/shader/sfericky");
 
+        pocetBodu = 20;
         createBuffers(gl);
 
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
@@ -79,12 +82,14 @@ public class Renderer implements GLEventListener, MouseListener,
         kartez = 5;
         sferic = 0;
         cylindr = 0;
+
+        pocetBoduZmenen = false;
     }
 
     void createBuffers(GL2 gl)
     {
-        kartezsky = MeshGenerator.createGrid(gl, 20, "inParamPos");
-        sfericky = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        kartezsky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
+        sfericky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
     }
 
     @Override
@@ -96,6 +101,12 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         float[] mat = ToFloatArray.convert(cam.getViewMatrix().mul(proj));
+
+        if (pocetBoduZmenen)
+        {
+            pocetBoduZmenen = false;
+            createBuffers(gl);
+        }
 
         if (kartez > 0)
         {
@@ -213,7 +224,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 break;
         }
         String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], ";
-        String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText;
+        String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText + ", počet bodů -[4] +[5]:" + pocetBodu;
         String objekty = "Vykreslované objekty: Kartézský [1]: " + objektKartezsky + "; sférický [2]: " + objektSfericky + ";";
         String objekty2 = "cylindrický [3]: " + objektCylindricky;
 
@@ -346,6 +357,22 @@ public class Renderer implements GLEventListener, MouseListener,
                 {
                     cylindr = 0;
                 }
+                break;
+            case KeyEvent.VK_5:
+            case KeyEvent.VK_NUMPAD5:
+                if (pocetBodu < 100)
+                {
+                    pocetBodu++;
+                }
+                pocetBoduZmenen = true;
+                break;
+            case KeyEvent.VK_4:
+            case KeyEvent.VK_NUMPAD4:
+                if (pocetBodu > 10)
+                {
+                    pocetBodu--;
+                }
+                pocetBoduZmenen = true;
                 break;
         }
     }
