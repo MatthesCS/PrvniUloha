@@ -110,6 +110,67 @@ public class Renderer implements GLEventListener, MouseListener,
         }
 
         String barvaText = "";
+        String objektKartezsky = "";
+        String objektSfericky = "";
+        String objektCylindricky = "";
+        
+        switch (kartez)
+        {
+            case 0:
+                objektKartezsky = "žádný";
+                break;
+            case 1:
+                objektKartezsky = "kulová plocha";
+                break;
+            case 2:
+                objektKartezsky = "přesípací hodiny";
+                break;
+            case 3:
+                objektKartezsky = "sud";
+                break;
+            case 4:
+                objektKartezsky = "mobius band";
+                break;
+        }
+        
+        switch (sferic)
+        {
+            case 0:
+                objektSfericky = "žádný";
+                break;
+            case 1:
+                objektSfericky = "nic";
+                break;
+            case 2:
+                objektSfericky = "nic";
+                break;
+            case 3:
+                objektSfericky = "nic";
+                break;
+            case 4:
+                objektSfericky = "nic";
+                break;
+        }
+        
+        switch (cylindr)
+        {
+            case 0:
+                objektCylindricky = "žádný";
+                break;
+            case 1:
+                objektCylindricky = "nic";
+                break;
+            case 2:
+                objektCylindricky = "nic";
+                break;
+            case 3:
+                objektCylindricky = "nic";
+                break;
+            case 4:
+                objektCylindricky = "nic";
+                break;
+        }
+        
         switch (barva)
         {
             case 0:
@@ -137,12 +198,16 @@ public class Renderer implements GLEventListener, MouseListener,
                 barvaText = "podle normál";
                 break;
         }
-        String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], vykreslování: [1-3],";
+        String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], ";
         String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText;
+        String objekty = "Vykreslované objekty: Kartézský [1]: " + objektKartezsky + "; sférický [2]: " + objektSfericky + ";";
+        String objekty2 =  "cylindrický [3]: " + objektCylindricky;
 
         textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
         textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
         textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+        textRenderer.drawStr2D(glDrawable, 3, 20, objekty);
+        textRenderer.drawStr2D(glDrawable, 3, 5, objekty2);
     }
 
     @Override
