@@ -45,6 +45,17 @@ vec3 kulPlocha(vec2 paramPos)
 	);
 }
 
+vec3 panacek(vec2 paramPos)
+{
+        float x = paramPos.x * 5 - 2.5;
+        float y = paramPos.y / 2;
+	return vec3(
+		cos(x*x)*-1,
+		x,
+		y/2
+	);
+}
+
 vec3 prepocet(vec3 paramPos)
 {
     float r = paramPos.x;
@@ -75,7 +86,7 @@ vec3 surface(vec2 paramPos)
     }
     else if(objekt == 4)
     {
-       souradnice = klikovaHridel(paramPos);
+       souradnice = panacek(paramPos);
     }
 
     return prepocet(souradnice);
