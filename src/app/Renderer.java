@@ -37,13 +37,13 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy, barva, kartez, sferic, cylindr;
 
-    OGLBuffers kartezsky;
+    OGLBuffers kartezsky, sfericky;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
-    int kartezskyShader;
-    int kartezskyLocMat;
-    int kartezskyLocBarva;
-    int kartezskyLocObjekt;
+    int kartezskyShader, sferickyShader;
+    int kartezskyLocMat, sferickyLocMat;
+    int kartezskyLocBarva, sferickyLocBarva;
+    int kartezskyLocObjekt, sferickyLocObjekt;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -57,12 +57,17 @@ public class Renderer implements GLEventListener, MouseListener,
         OGLUtils.shaderCheck(gl);
 
         kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
+        sferickyShader = ShaderUtils.loadProgram(gl, "/shader/sfericky");
 
         createBuffers(gl);
 
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
+        
+        sferickyLocMat = gl.glGetUniformLocation(sferickyShader, "mat");
+        sferickyLocBarva = gl.glGetUniformLocation(sferickyShader, "barva");
+        sferickyLocObjekt = gl.glGetUniformLocation(sferickyShader, "objekt");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -71,14 +76,15 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         barva = 1;
-        kartez = 1;
-        sferic = 0;
+        kartez = 0;
+        sferic = 3;
         cylindr = 0;
     }
 
     void createBuffers(GL2 gl)
     {
         kartezsky = MeshGenerator.createGrid(gl, 20, "inParamPos");
+        sfericky = MeshGenerator.createGrid(gl, 20, "inParamPos");
     }
 
     @Override
@@ -102,7 +108,12 @@ public class Renderer implements GLEventListener, MouseListener,
         }
         if (sferic > 0)
         {
-            //sférické
+            gl.glUseProgram(sferickyShader);
+            gl.glUniformMatrix4fv(sferickyLocMat, 1, false, mat, 0);
+            gl.glUniform1f(sferickyLocBarva, (float) barva);
+            gl.glUniform1f(sferickyLocObjekt, (float) sferic);
+
+            sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
         }
         if (cylindr > 0)
         {
