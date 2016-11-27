@@ -37,8 +37,8 @@ public class Renderer implements GLEventListener, MouseListener,
 {
 
     int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu, pozSvetla;
-    int zadavaniPozice;
-    
+    int zadavaniPozice, typSvetla;
+
     textUtils textUtils;
 
     Vec3D poziceSvetla, vlastniPoziceSvetla;
@@ -53,6 +53,7 @@ public class Renderer implements GLEventListener, MouseListener,
     int kartezskyLocBarva, sferickyLocBarva, cylindrickyLocBarva;
     int kartezskyLocObjekt, sferickyLocObjekt, cylindrickyLocObjekt;
     int kartezskyLocPozSvetla, sferickyLocPozSvetla, cylindrickyLocPozSvetla;
+    int kartezskyLocTypSvetla, sferickyLocTypSvetla, cylindrickyLocTypSvetla;
 
     int svetelnyShader, svetelnyLocMat, svetelnyLocPozSvetla;
 
@@ -82,16 +83,19 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
         kartezskyLocObjekt = gl.glGetUniformLocation(kartezskyShader, "objekt");
         kartezskyLocPozSvetla = gl.glGetUniformLocation(kartezskyShader, "poziceSvetla");
+        kartezskyLocTypSvetla = gl.glGetUniformLocation(kartezskyShader, "s");
 
         sferickyLocMat = gl.glGetUniformLocation(sferickyShader, "mat");
         sferickyLocBarva = gl.glGetUniformLocation(sferickyShader, "barva");
         sferickyLocObjekt = gl.glGetUniformLocation(sferickyShader, "objekt");
         sferickyLocPozSvetla = gl.glGetUniformLocation(sferickyShader, "poziceSvetla");
+        sferickyLocTypSvetla = gl.glGetUniformLocation(sferickyShader, "s");
 
         cylindrickyLocMat = gl.glGetUniformLocation(cylindrickyShader, "mat");
         cylindrickyLocBarva = gl.glGetUniformLocation(cylindrickyShader, "barva");
         cylindrickyLocObjekt = gl.glGetUniformLocation(cylindrickyShader, "objekt");
         cylindrickyLocPozSvetla = gl.glGetUniformLocation(cylindrickyShader, "poziceSvetla");
+        cylindrickyLocTypSvetla = gl.glGetUniformLocation(cylindrickyShader, "s");
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
@@ -103,6 +107,7 @@ public class Renderer implements GLEventListener, MouseListener,
         kartez = 1;
         sferic = 0;
         cylindr = 0;
+        typSvetla = 0;
 
         pozSvetla = 0;
         poziceSvetla = new Vec3D(5, 5, 5);
@@ -111,7 +116,7 @@ public class Renderer implements GLEventListener, MouseListener,
         vlastniSvetlo = false;
         minus = false;
         zadavaniPozice = 0;
-        
+
         textUtils = new textUtils(textRenderer, width, height, glDrawable);
     }
 
@@ -147,7 +152,8 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform1f(kartezskyLocBarva, (float) barva);
             gl.glUniform1f(kartezskyLocObjekt, (float) kartez);
             gl.glUniform3f(kartezskyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
-
+            gl.glUniform1f(kartezskyLocTypSvetla, (float) typSvetla);
+            
             kartezsky.draw(GL2.GL_TRIANGLES, kartezskyShader);
         }
         if (sferic > 0)
@@ -157,7 +163,8 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform1f(sferickyLocBarva, (float) barva);
             gl.glUniform1f(sferickyLocObjekt, (float) sferic);
             gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
-
+            gl.glUniform1f(sferickyLocTypSvetla, (float) typSvetla);
+            
             sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
         }
         if (cylindr > 0)
@@ -167,7 +174,8 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform1f(cylindrickyLocBarva, (float) barva);
             gl.glUniform1f(cylindrickyLocObjekt, (float) cylindr);
             gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
-
+            gl.glUniform1f(cylindrickyLocTypSvetla, (float) typSvetla);
+            
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
         }
 
@@ -179,13 +187,14 @@ public class Renderer implements GLEventListener, MouseListener,
 
             svetelny.draw(GL2.GL_TRIANGLES, svetelnyShader);
         }
-        
+
         String svetlo = "";
 
         switch (pozSvetla)
         {
             case 0:
-                poziceSvetla = new Vec3D(0, 0, 0);
+                poziceSvetla = new Vec3D();
+                typSvetla = 0;
                 svetlo = "vypnuto";
                 break;
             case 1:
@@ -232,15 +241,13 @@ public class Renderer implements GLEventListener, MouseListener,
             {
                 svetlo += "-";
             }
-
             svetlo += "      ;změna znaménka: [+]";
-
         }
 
         textUtils.vypisTextOvládání();
         textUtils.vypisTextBarvaBody(barva, pocetBodu);
         textUtils.vypisCopyright();
-        textUtils.vypisSvetlo(svetlo);
+        textUtils.vypisSvetlo(svetlo, typSvetla);
         textUtils.vypisObjekty(kartez, sferic, cylindr);
     }
 
@@ -390,9 +397,11 @@ public class Renderer implements GLEventListener, MouseListener,
                 case KeyEvent.VK_6:
                 case KeyEvent.VK_NUMPAD6:
                     pozSvetla++;
+                    typSvetla = 1;
                     if (pozSvetla > 5)
                     {
                         pozSvetla = 0;
+                        typSvetla = 0;
                     }
                     if (vlastniSvetlo)
                     {
@@ -406,6 +415,16 @@ public class Renderer implements GLEventListener, MouseListener,
                     vlastniSvetlo = false;
                     zadavaniPozice = 1;
                     vlastniPoziceSvetla = new Vec3D();
+                case KeyEvent.VK_K:
+                    if(typSvetla==1)
+                    {
+                        typSvetla++;
+                    }
+                    else if(typSvetla==2)
+                    {
+                        typSvetla--;
+                    }
+                    break;
             }
         } else
         {

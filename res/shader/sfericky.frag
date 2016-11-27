@@ -2,16 +2,22 @@
 in vec3 vertColor;
 in vec3 light;
 in vec3 vertNormal;
+in float diff;
+in float svetlo;
 out vec4 outColor;
 
 void main() {
-        if(light.x != 0 && light.y != 0 && light.z != 0)
+        if(svetlo == 0)
         {
-            float d = dot(normalize(vertNormal), normalize(light));
-            outColor = vec4(vertColor, 1.0) * d;
+            outColor = vec4(vertColor, 1.0);
+        }
+        else if (svetlo == 1)
+        {
+            outColor = vec4(vertColor, 1.0) * diff;
         }        
         else
         {
-            outColor = vec4(vertColor, 1.0);
+            float d = dot(normalize(vertNormal), normalize(light));
+            outColor = vec4(vertColor, 1.0) * d;
         }
 } 

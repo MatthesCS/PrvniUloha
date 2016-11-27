@@ -3,10 +3,13 @@ in vec2 inParamPos;
 out vec3 vertColor;
 out vec3 light;
 out vec3 vertNormal;
+out float diff;
+out float svetlo;
 uniform vec3 poziceSvetla;
 uniform mat4 mat;
 uniform float barva;
 uniform float objekt;
+uniform float s;
 
 const float PI = 3.1415927;
 const float DELTA = 0.001;
@@ -142,16 +145,24 @@ vec3 color(float barva, vec3 position)
 }
 		
 void main() {
+        svetlo = s;
 	vec3 position = surface(inParamPos);
 	gl_Position = mat * vec4(position, 1.0);
         vertColor = color(barva, position);
-        if(poziceSvetla.x == 0 && poziceSvetla.y == 0 && poziceSvetla.z == 0)
+        vertNormal = normalize(normal(inParamPos));
+        if(svetlo == 0)
         {
             light = vec3(0,0,0);
+            diff = 0;
+        }
+        else if(svetlo == 1)
+        {
+            light = position - poziceSvetla;
+            diff = dot(normalize(vertNormal), normalize(light));
         }
         else
         {
             light = position - poziceSvetla;
+            diff = 0;
         }
-        vertNormal = normal(inParamPos);
 }
