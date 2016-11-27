@@ -176,6 +176,8 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(sferickyLocTypSvetla, (float) typSvetla);
             
+            texture.bind(sferickyShader, "texture", 0);
+            
             sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
         }
         if (cylindr > 0)
@@ -186,6 +188,8 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform1f(cylindrickyLocObjekt, (float) cylindr);
             gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(cylindrickyLocTypSvetla, (float) typSvetla);
+            
+            texture.bind(cylindrickyShader, "texture", 0);
             
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
         }

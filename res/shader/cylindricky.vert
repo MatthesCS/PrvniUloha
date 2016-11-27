@@ -1,5 +1,6 @@
 #version 150
 in vec2 inParamPos;
+out vec2 textCoord;
 out vec3 vertColor;
 out vec3 light;
 out vec3 vertNormal;
@@ -98,6 +99,26 @@ vec3 surface(vec2 paramPos)
     return prepocet(souradnice);
 }
 
+float pocetTextur()
+{
+    if(objekt == 1)
+    {
+        return 2;
+    }
+    else if(objekt == 2)
+    {
+        return 3;
+    }
+    else if(objekt == 3)
+    {
+       return 3;
+    }
+    else if(objekt == 4)
+    {
+       return 2;
+    }
+}
+
 vec3 normal(vec2 paramPos)
 {
         vec2 dx = vec2(DELTA, 0), dy = vec2(0, DELTA);
@@ -147,20 +168,21 @@ vec3 color(float barva, vec3 position)
 void main() {
         svetlo = s;
 	vec3 position = surface(inParamPos);
+        textCoord = inParamPos*pocetTextur();
 	gl_Position = mat * vec4(position, 1.0);
         vertColor = color(barva, position);
         vertNormal = normalize(normal(inParamPos));
-        if(svetlo == 0)
+        if(svetlo == 0 || svetlo == 10)
         {
             light = vec3(0,0,0);
             diff = 0;
         }
-        else if(svetlo == 1)
+        else if(svetlo == 1 || svetlo == 11)
         {
             light = position - poziceSvetla;
             diff = dot(normalize(vertNormal), normalize(light));
         }
-        else
+        else if(svetlo == 2 || svetlo == 12)
         {
             light = position - poziceSvetla;
             diff = 0;
