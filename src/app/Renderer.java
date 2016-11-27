@@ -405,7 +405,14 @@ public class Renderer implements GLEventListener, MouseListener,
                 case KeyEvent.VK_6:
                 case KeyEvent.VK_NUMPAD6:
                     pozSvetla++;
-                    typSvetla = 1;
+                    if(typSvetla == 10)
+                    {
+                        typSvetla = 11;
+                    }
+                    else 
+                    {
+                        typSvetla = 1;
+                    }
                     if (pozSvetla > 5)
                     {
                         pozSvetla = 0;
@@ -420,18 +427,36 @@ public class Renderer implements GLEventListener, MouseListener,
                     break;
                 case KeyEvent.VK_L:
                     pozSvetla = 0;
-                    typSvetla = 1;
+                    if(typSvetla == 10)
+                    {
+                        typSvetla = 11;
+                    }
+                    else 
+                    {
+                        typSvetla = 1;
+                    }
                     vlastniSvetlo = false;
                     zadavaniPozice = 1;
                     vlastniPoziceSvetla = new Vec3D();
                 case KeyEvent.VK_K:
-                    if(typSvetla==1)
+                    if(typSvetla==1 || typSvetla == 11)
                     {
                         typSvetla++;
                     }
-                    else if(typSvetla==2)
+                    else if(typSvetla==2 || typSvetla == 12)
                     {
                         typSvetla--;
+                    }
+                    break;
+                case KeyEvent.VK_T:
+                case KeyEvent.VK_NUMPAD7:
+                    if(typSvetla <= 3)
+                    {
+                        typSvetla += 10;
+                    }
+                    else
+                    {
+                        typSvetla -=10;
                     }
                     break;
             }
@@ -785,7 +810,14 @@ public class Renderer implements GLEventListener, MouseListener,
             if (zadavaniPozice > 3)
             {
                 zadavaniPozice = 0;
-                typSvetla = 1;
+                if(typSvetla == 10)
+                {
+                    typSvetla = 11;
+                }
+                else 
+                {
+                    typSvetla = 1;
+                }
                 vlastniSvetlo = true;
             }
         }
@@ -809,6 +841,9 @@ public class Renderer implements GLEventListener, MouseListener,
     {
         GL2 gl = glDrawable.getGL().getGL2();
         gl.glDeleteProgram(kartezskyShader);
+        gl.glDeleteProgram(sferickyShader);
+        gl.glDeleteProgram(cylindrickyShader);
+        gl.glDeleteProgram(svetelnyShader);
     }
 
 }

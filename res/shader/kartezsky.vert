@@ -176,17 +176,17 @@ void main() {
 	gl_Position = mat * vec4(position, 1.0);
         vertColor = color(barva, position);
         vertNormal = normalize(normal(inParamPos));
-        if(svetlo == 0)
+        if(svetlo == 0 ||svetlo == 10)
         {
             light = vec3(0,0,0);
             diff = 0;
         }
-        else if(svetlo == 1)
+        else if(svetlo == 1 || svetlo == 11)
         {
             light = position - poziceSvetla;
             diff = dot(normalize(vertNormal), normalize(light));
         }
-        else
+        else if(svetlo == 2 || svetlo == 12)
         {
             light = position - poziceSvetla;
             diff = 0;

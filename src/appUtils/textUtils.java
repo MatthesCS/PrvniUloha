@@ -85,15 +85,19 @@ public class textUtils
         switch(typSvetla)
         {
             case 0:
+            case 10:
                 svetloText += "vypnuto";
                 break;
             case 1:
+            case 11:
                 svetloText += "per vertex";
                 break;
             case 2:
+            case 12:
                 svetloText += "per pixel";
                 break;
         }
+        svetloText += "; Textura [7] [T]";
         
         textRenderer.drawStr2D(glDraw, 3, height - 50, svetloText);
     }
