@@ -151,7 +151,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(kartezskyLocMat, 1, false, mat, 0);
             gl.glUniform1f(kartezskyLocBarva, (float) barva);
             gl.glUniform1f(kartezskyLocObjekt, (float) kartez);
-            gl.glUniform3f(kartezskyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
+            gl.glUniform3f(kartezskyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(kartezskyLocTypSvetla, (float) typSvetla);
             
             kartezsky.draw(GL2.GL_TRIANGLES, kartezskyShader);
@@ -162,7 +162,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(sferickyLocMat, 1, false, mat, 0);
             gl.glUniform1f(sferickyLocBarva, (float) barva);
             gl.glUniform1f(sferickyLocObjekt, (float) sferic);
-            gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
+            gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(sferickyLocTypSvetla, (float) typSvetla);
             
             sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
@@ -173,7 +173,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniformMatrix4fv(cylindrickyLocMat, 1, false, mat, 0);
             gl.glUniform1f(cylindrickyLocBarva, (float) barva);
             gl.glUniform1f(cylindrickyLocObjekt, (float) cylindr);
-            gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
+            gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(cylindrickyLocTypSvetla, (float) typSvetla);
             
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
@@ -183,7 +183,7 @@ public class Renderer implements GLEventListener, MouseListener,
         {
             gl.glUseProgram(svetelnyShader);
             gl.glUniformMatrix4fv(svetelnyLocMat, 1, false, mat, 0);
-            gl.glUniform3f(svetelnyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
+            gl.glUniform3f(svetelnyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
 
             svetelny.draw(GL2.GL_TRIANGLES, svetelnyShader);
         }
@@ -194,7 +194,6 @@ public class Renderer implements GLEventListener, MouseListener,
         {
             case 0:
                 poziceSvetla = new Vec3D();
-                typSvetla = 0;
                 svetlo = "vypnuto";
                 break;
             case 1:
@@ -206,20 +205,16 @@ public class Renderer implements GLEventListener, MouseListener,
                 svetlo = "-5,5,5";
                 break;
             case 3:
-                poziceSvetla = new Vec3D(-5, -5, 5);
-                svetlo = "-5,-5,5";
-                break;
-            case 4:
                 poziceSvetla = new Vec3D(5, -5, 5);
                 svetlo = "5,-5,5";
+                break;
+            case 4:
+                poziceSvetla = new Vec3D(-5, -5, 5);
+                svetlo = "-5,-5,5";
                 break;
             case 5:
                 poziceSvetla = new Vec3D(0, 0, 5);
                 svetlo = "0,0,5";
-                break;
-            case 6:
-                poziceSvetla = new Vec3D(0, 0, -5);
-                svetlo = "0,0,-5";
                 break;
         }
         if (vlastniSvetlo)
@@ -241,7 +236,7 @@ public class Renderer implements GLEventListener, MouseListener,
             {
                 svetlo += "-";
             }
-            svetlo += "      ;změna znaménka: [+]";
+            svetlo += ";změna znaménka: [+]";
         }
 
         textUtils.vypisTextOvládání();
@@ -412,6 +407,7 @@ public class Renderer implements GLEventListener, MouseListener,
                     break;
                 case KeyEvent.VK_L:
                     pozSvetla = 0;
+                    typSvetla = 1;
                     vlastniSvetlo = false;
                     zadavaniPozice = 1;
                     vlastniPoziceSvetla = new Vec3D();
@@ -776,6 +772,7 @@ public class Renderer implements GLEventListener, MouseListener,
             if (zadavaniPozice > 3)
             {
                 zadavaniPozice = 0;
+                typSvetla = 1;
                 vlastniSvetlo = true;
             }
         }
