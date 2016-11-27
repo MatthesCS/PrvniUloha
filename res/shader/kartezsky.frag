@@ -11,17 +11,15 @@ uniform sampler2D texture;
 void main() {
         if(svetlo == 0)
         {
-            outColor = vec4(vertColor, 1.0);
+            outColor = vec4(vertColor, 1.0) * texture2D(texture, textCoord);
         }
         else if (svetlo == 1)
         {
-            outColor = vec4(vertColor, 1.0) * diff;
+            outColor = vec4(vertColor, 1.0) * diff* texture2D(texture, textCoord);
         }        
         else
         {
             float d = dot(normalize(vertNormal), normalize(light));
-            outColor = vec4(vertColor, 1.0) * d;
+            outColor = vec4(vertColor, 1.0) * d * texture2D(texture, textCoord);
         }
-
-        outColor = vec4(1,1,1,1) * texture2D(texture, textCoord);
 } 
