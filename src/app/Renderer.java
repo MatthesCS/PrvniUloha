@@ -40,7 +40,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
     Vec3D poziceSvetla, vlastniPoziceSvetla;
 
-    boolean pocetBoduZmenen, vlastniSvetlo;
+    boolean pocetBoduZmenen, vlastniSvetlo, minus;
 
     OGLBuffers kartezsky, sfericky, cylidnricky, svetelny;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
@@ -106,6 +106,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
         pocetBoduZmenen = false;
         vlastniSvetlo = false;
+        minus = false;
         zadavaniPozice = 0;
     }
 
@@ -215,19 +216,24 @@ public class Renderer implements GLEventListener, MouseListener,
         {
             svetlo = vlastniPoziceSvetla.getX() + "," + vlastniPoziceSvetla.getY() + "," + vlastniPoziceSvetla.getZ();
             poziceSvetla = vlastniPoziceSvetla;
-        }
-        else if (zadavaniPozice > 0)
+        } else if (zadavaniPozice > 0)
         {
             svetlo = "zadávání x: ";
-            if(zadavaniPozice>1)
+            if (zadavaniPozice > 1)
             {
                 svetlo += vlastniPoziceSvetla.getX() + ", y:";
             }
-            if(zadavaniPozice>2)
+            if (zadavaniPozice > 2)
             {
                 svetlo += vlastniPoziceSvetla.getY() + ", z:";
             }
-            
+            if (minus)
+            {
+                svetlo += "-";
+            }
+
+            svetlo += "      ;změna znaménka: [+]";
+
         }
 
         switch (kartez)
@@ -479,9 +485,9 @@ public class Renderer implements GLEventListener, MouseListener,
                     {
                         pozSvetla = 0;
                     }
-                    if(vlastniSvetlo)
+                    if (vlastniSvetlo)
                     {
-                        vlastniSvetlo=false;
+                        vlastniSvetlo = false;
                         pozSvetla = 0;
                         vlastniPoziceSvetla = new Vec3D();
                     }
@@ -505,162 +511,338 @@ public class Renderer implements GLEventListener, MouseListener,
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(1, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-1, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(1, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 1, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -1, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 1, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 1));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -1));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 1));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_2:
                 case KeyEvent.VK_NUMPAD2:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(2, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-2, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(2, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 2, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -2, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 2, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 2));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -2));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 2));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_3:
                 case KeyEvent.VK_NUMPAD3:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(3, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-3, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(3, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
+
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 3, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -3, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 3, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 3));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -3));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 3));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_4:
                 case KeyEvent.VK_NUMPAD4:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(4, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-4, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(4, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 4, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -4, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 4, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 4));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -4));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 4));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_5:
                 case KeyEvent.VK_NUMPAD5:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(5, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-5, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(5, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 5, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -5, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 5, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 5));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -5));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 5));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_6:
                 case KeyEvent.VK_NUMPAD6:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(6, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-6, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(6, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 6, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -6, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 6, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 6));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -6));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 6));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_7:
                 case KeyEvent.VK_NUMPAD7:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(7, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-7, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(7, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 7, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -7, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 7, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 7));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -7));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 7));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_8:
                 case KeyEvent.VK_NUMPAD8:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(8, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(-8, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(8, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 8, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -8, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 8, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 8));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -8));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 8));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
                     break;
                 case KeyEvent.VK_9:
                 case KeyEvent.VK_NUMPAD9:
                     switch (zadavaniPozice)
                     {
                         case 1:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(9.0, 0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(9, 0, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(9.0, 0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 2:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 9.0, 0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, -9, 0));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 9.0, 0));
+                            }
                             zadavaniPozice++;
                             break;
                         case 3:
-                            vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 9.0));
+                            if (minus)
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, -9));
+                            } else
+                            {
+                                vlastniPoziceSvetla = vlastniPoziceSvetla.add(new Vec3D(0, 0, 9.0));
+                            }
                             zadavaniPozice++;
                             break;
                     }
+                    minus = false;
+                    break;
+                case KeyEvent.VK_PLUS:
+                case KeyEvent.VK_ADD:
+                    minus = !minus;
                     break;
             }
             if (zadavaniPozice > 3)
