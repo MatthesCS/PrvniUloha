@@ -151,7 +151,7 @@ void main() {
         }
         else
         {
-            light = poziceSvetla - position;
+            light = position - poziceSvetla;
         }
         vertNormal = normal(inParamPos);
 }
