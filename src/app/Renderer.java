@@ -21,6 +21,7 @@ import transforms.Camera;
 import transforms.Mat4;
 import transforms.Mat4PerspRH;
 import transforms.Vec3D;
+import appUtils.textUtils;
 
 /**
  * GLSL sample:<br/>
@@ -37,6 +38,8 @@ public class Renderer implements GLEventListener, MouseListener,
 
     int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu, pozSvetla;
     int zadavaniPozice;
+    
+    textUtils textUtils;
 
     Vec3D poziceSvetla, vlastniPoziceSvetla;
 
@@ -108,6 +111,8 @@ public class Renderer implements GLEventListener, MouseListener,
         vlastniSvetlo = false;
         minus = false;
         zadavaniPozice = 0;
+        
+        textUtils = new textUtils(textRenderer, width, height, glDrawable);
     }
 
     void createBuffers(GL2 gl)
@@ -174,11 +179,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
             svetelny.draw(GL2.GL_TRIANGLES, svetelnyShader);
         }
-
-        String barvaText = "";
-        String objektKartezsky = "";
-        String objektSfericky = "";
-        String objektCylindricky = "";
+        
         String svetlo = "";
 
         switch (pozSvetla)
@@ -236,105 +237,11 @@ public class Renderer implements GLEventListener, MouseListener,
 
         }
 
-        switch (kartez)
-        {
-            case 0:
-                objektKartezsky = "žádný";
-                break;
-            case 1:
-                objektKartezsky = "kulová plocha";
-                break;
-            case 2:
-                objektKartezsky = "přesípací hodiny";
-                break;
-            case 3:
-                objektKartezsky = "sud";
-                break;
-            case 4:
-                objektKartezsky = "mobius band";
-                break;
-            case 5:
-                objektKartezsky = "turbína";
-                break;
-        }
-
-        switch (sferic)
-        {
-            case 0:
-                objektSfericky = "žádný";
-                break;
-            case 1:
-                objektSfericky = "kulová plocha";
-                break;
-            case 2:
-                objektSfericky = "burák";
-                break;
-            case 3:
-                objektSfericky = "list";
-                break;
-            case 4:
-                objektSfericky = "pohár";
-                break;
-        }
-
-        switch (cylindr)
-        {
-            case 0:
-                objektCylindricky = "žádný";
-                break;
-            case 1:
-                objektCylindricky = "kulová plocha";
-                break;
-            case 2:
-                objektCylindricky = "sombréro";
-                break;
-            case 3:
-                objektCylindricky = "kliková hřídel";
-                break;
-            case 4:
-                objektCylindricky = "panáček";
-                break;
-        }
-
-        switch (barva)
-        {
-            case 0:
-                barvaText = "černá";
-                break;
-            case 1:
-                barvaText = "červená";
-                break;
-            case 2:
-                barvaText = "zelená";
-                break;
-            case 3:
-                barvaText = "modrá";
-                break;
-            case 4:
-                barvaText = "bílá";
-                break;
-            case 5:
-                barvaText = "podle parametrů";
-                break;
-            case 6:
-                barvaText = "podle pozice";
-                break;
-            case 7:
-                barvaText = "podle normál";
-                break;
-        }
-        String text = "Ovládání: kamera: [LMB], pohyb: [WASD] nebo šipky, [CTRL] a [Shift], ";
-        String barva = "změna barvy: [0] nebo [B]. Nastavená barva: " + barvaText + ", počet bodů -[4] +[5]:" + pocetBodu;
-        String svetloText = "Pozice světla [6], vlastní [L]: " + svetlo;
-        String objekty = "Vykreslované objekty: Kartézský [1]: " + objektKartezsky + "; sférický [2]: " + objektSfericky + ";";
-        String objekty2 = "cylindrický [3]: " + objektCylindricky;
-
-        textRenderer.drawStr2D(glDrawable, 3, height - 20, text);
-        textRenderer.drawStr2D(glDrawable, 3, height - 35, barva);
-        textRenderer.drawStr2D(glDrawable, 3, height - 50, svetloText);
-        textRenderer.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
-        textRenderer.drawStr2D(glDrawable, 3, 20, objekty);
-        textRenderer.drawStr2D(glDrawable, 122, 5, objekty2);
+        textUtils.vypisTextOvládání();
+        textUtils.vypisTextBarvaBody(barva, pocetBodu);
+        textUtils.vypisCopyright();
+        textUtils.vypisSvetlo(svetlo);
+        textUtils.vypisObjekty(kartez, sferic, cylindr);
     }
 
     @Override
@@ -344,6 +251,8 @@ public class Renderer implements GLEventListener, MouseListener,
         this.width = width;
         this.height = height;
         proj = new Mat4PerspRH(Math.PI / 4, height / (double) width, 0.01, 1000.0);
+        textUtils.setWidth(width);
+        textUtils.setHeight(height);
     }
 
     public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
