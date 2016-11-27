@@ -40,8 +40,7 @@ public class Renderer implements GLEventListener, MouseListener,
     int width, height, ox, oy, barva, kartez, sferic, cylindr, pocetBodu, pozSvetla;
     int zadavaniPozice, typSvetla;
 
-    OGLTexture2D texture;
-    OGLTexture2D.Viewer textureViewer;
+    OGLTexture2D textura;
     
     textUtils textUtils;
 
@@ -101,16 +100,15 @@ public class Renderer implements GLEventListener, MouseListener,
         cylindrickyLocPozSvetla = gl.glGetUniformLocation(cylindrickyShader, "poziceSvetla");
         cylindrickyLocTypSvetla = gl.glGetUniformLocation(cylindrickyShader, "s");
         
-        texture = new OGLTexture2D(gl, "/textures/bricks.jpg");
-        texture .getTexture().setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
-        texture .getTexture().setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+        textura = new OGLTexture2D(gl, "/textures/bricks.jpg");
+        textura .getTexture().setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+        textura .getTexture().setTexParameterf(gl, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
 
         cam = cam.withPosition(new Vec3D(5, 5, 2.5))
                 .withAzimuth(Math.PI * 1.25)
                 .withZenith(Math.PI * -0.125);
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        textureViewer = new OGLTexture2D.Viewer(gl);
 
         barva = 5;
         kartez = 1;
@@ -163,7 +161,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform3f(kartezskyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(kartezskyLocTypSvetla, (float) typSvetla);
             
-            texture.bind(kartezskyShader, "texture", 0);
+            textura.bind(kartezskyShader, "texture", 0);
             
             kartezsky.draw(GL2.GL_TRIANGLES, kartezskyShader);
         }
@@ -176,7 +174,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform3f(sferickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(sferickyLocTypSvetla, (float) typSvetla);
             
-            texture.bind(sferickyShader, "texture", 0);
+            textura.bind(sferickyShader, "texture", 0);
             
             sfericky.draw(GL2.GL_TRIANGLES, sferickyShader);
         }
@@ -189,7 +187,7 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getY(), (float) poziceSvetla.getZ());
             gl.glUniform1f(cylindrickyLocTypSvetla, (float) typSvetla);
             
-            texture.bind(cylindrickyShader, "texture", 0);
+            textura.bind(cylindrickyShader, "texture", 0);
             
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
         }
@@ -202,8 +200,6 @@ public class Renderer implements GLEventListener, MouseListener,
 
             svetelny.draw(GL2.GL_TRIANGLES, svetelnyShader);
         }
-        
-        textureViewer.view(texture, -1, -1, 0.5);
 
         String svetlo = "";
 
