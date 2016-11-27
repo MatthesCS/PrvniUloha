@@ -41,7 +41,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
     boolean pocetBoduZmenen;
 
-    OGLBuffers kartezsky, sfericky, cylidnricky;
+    OGLBuffers kartezsky, sfericky, cylidnricky, svetelny;
     OGLTextRenderer textRenderer = new OGLTextRenderer();
 
     int kartezskyShader, sferickyShader, cylindrickyShader;
@@ -49,6 +49,8 @@ public class Renderer implements GLEventListener, MouseListener,
     int kartezskyLocBarva, sferickyLocBarva, cylindrickyLocBarva;
     int kartezskyLocObjekt, sferickyLocObjekt, cylindrickyLocObjekt;
     int kartezskyLocPozSvetla, sferickyLocPozSvetla, cylindrickyLocPozSvetla;
+
+    int svetelnyShader, svetelnyLocMat, svetelnyLocPozSvetla;
 
     Camera cam = new Camera();
     Mat4 proj;
@@ -64,9 +66,13 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezskyShader = ShaderUtils.loadProgram(gl, "/shader/kartezsky");
         sferickyShader = ShaderUtils.loadProgram(gl, "/shader/sfericky");
         cylindrickyShader = ShaderUtils.loadProgram(gl, "/shader/cylindricky");
+        svetelnyShader = ShaderUtils.loadProgram(gl, "/shader/svetelny");
 
         pocetBodu = 20;
         createBuffers(gl);
+
+        svetelnyLocMat = gl.glGetUniformLocation(svetelnyShader, "mat");
+        svetelnyLocPozSvetla = gl.glGetUniformLocation(svetelnyShader, "poziceSvetla");
 
         kartezskyLocMat = gl.glGetUniformLocation(kartezskyShader, "mat");
         kartezskyLocBarva = gl.glGetUniformLocation(kartezskyShader, "barva");
@@ -105,6 +111,8 @@ public class Renderer implements GLEventListener, MouseListener,
         kartezsky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
         sfericky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
         cylidnricky = MeshGenerator.createGrid(gl, pocetBodu, "inParamPos");
+
+        svetelny = MeshGenerator.createGrid(gl, 10, "inParamPos");
     }
 
     @Override
@@ -152,6 +160,15 @@ public class Renderer implements GLEventListener, MouseListener,
             gl.glUniform3f(cylindrickyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
 
             cylidnricky.draw(GL2.GL_TRIANGLES, cylindrickyShader);
+        }
+
+        if (pozSvetla > 0)
+        {
+            gl.glUseProgram(svetelnyShader);
+            gl.glUniformMatrix4fv(svetelnyLocMat, 1, false, mat, 0);
+            gl.glUniform3f(svetelnyLocPozSvetla, (float) poziceSvetla.getX(), (float) poziceSvetla.getX(), (float) poziceSvetla.getX());
+
+            svetelny.draw(GL2.GL_TRIANGLES, svetelnyShader);
         }
 
         String barvaText = "";
