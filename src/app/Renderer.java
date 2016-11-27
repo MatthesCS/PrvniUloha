@@ -175,7 +175,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 svetlo = "-5,5,5";
                 break;
             case 3:
-                poziceSvetla = new Vec3D(-5, -5, 10);
+                poziceSvetla = new Vec3D(-5, -5, 5);
                 svetlo = "-5,-5,5";
                 break;
             case 4:
